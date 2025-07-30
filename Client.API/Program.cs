@@ -1,6 +1,8 @@
 using Client.API.Endpoints;
-using Client.Infrastructure;
+using Client.API.Middlewares;
 using Client.Application;
+using Client.Domain;
+using Client.Infrastructure;
 using Client.Infrastructure.Configuration;
 
 namespace Client.API
@@ -16,6 +18,7 @@ namespace Client.API
 
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+            builder.Services.AddDomain();
 
             builder.Services.AddAuthorization();
             builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +30,9 @@ namespace Client.API
             app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ValidationExceptionMiddleware>();
+
             app.UseAuthorization();
 
             using (var scope = app.Services.CreateScope())

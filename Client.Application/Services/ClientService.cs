@@ -1,18 +1,32 @@
-﻿using Client.Domain.Models;
+﻿using Client.Domain.Exceptions;
+using Client.Domain.Models;
 using Client.Domain.Repositories;
+using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.Application.Services
 {
-    public class ClientService
+    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy)
     {
-        private readonly IClientRepository _repository;
-
-        public ClientService(IClientRepository repository)
+        public async Task AddClientAsync(ClientInstance client)
         {
-            _repository = repository;
+            var validationResult = clientValidationPolicy.Validate(client);
+
+            if (!validationResult.IsValid)
+            {
+                throw new EntityValidationException(validationResult);
+            }
+
+            AssigneIdsToEntities(client);
+
+            await repository.AddAsync(client);
         }
 
-        public async Task AddClientAsync(ClientInstance client)
+        public async Task<ClientInstance?> GetClientByIdAsync(Guid id)
+        {
+            return await repository.GetByIdAsync(id);
+        }
+
+        private static void AssigneIdsToEntities(ClientInstance client)
         {
             client.Id = Guid.NewGuid();
 
@@ -25,13 +39,6 @@ namespace Client.Application.Services
                     payment.Id = Guid.NewGuid();
                 }
             }
-
-            await _repository.AddAsync(client);
-        }
-
-        public async Task<ClientInstance?> GetClientByIdAsync(Guid id)
-        {
-            return await _repository.GetByIdAsync(id);
         }
     }
 }
