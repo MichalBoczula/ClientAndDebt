@@ -11,9 +11,9 @@ namespace Client.Domain.Validation.Concrete.Policies
 
         public ClientValidationPolicy()
         {
-            _rules.Add(new FirstNameValidationRule());
-            _rules.Add(new LastNameValidationRule());
-            _rules.Add(new BankAccountNumberValidationRule());
+            _rules.Add(new FirstNameNullOrWhiteSpaceValidationRule());
+            _rules.Add(new LastNameNullOrWhiteSpaceValidationRule());
+            _rules.Add(new BankAccountNumberFormatValidationRule());
         }
 
         public ValidationResult Validate(ClientInstance client)
@@ -26,6 +26,11 @@ namespace Client.Domain.Validation.Concrete.Policies
             }
 
             return validationResult;
+        }
+
+        public void Describe()
+        {
+            throw new NotImplementedException("This method is not implemented yet. Please implement it if needed.");
         }
     }
 }

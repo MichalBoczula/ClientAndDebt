@@ -16,65 +16,16 @@ namespace Client.Domain.Models
         public string BankAccountNumber { get; set; } = null!;
         public List<Debt> Debts { get; set; } = new();
 
-        public ValidationError IsFirstNameValid()
-        {
-            if (string.IsNullOrWhiteSpace(FirstName))
-            {
-                return new ValidationError()
-                {
-                    Message = "First name cannot be empty.",
-                    RuleName = "NotEmptyFirstName",
-                    Severity = RuleSeverity.Error
-                };
-            }
-            else
-            {
-                return null;
-            }
-        }
+        public bool IsFirstNameValid() => !string.IsNullOrWhiteSpace(FirstName);
 
-        public ValidationError IsLastNameValid()
-        {
-            if (string.IsNullOrWhiteSpace(LastName))
-            {
-                return new ValidationError()
-                {
-                    Message = "Last name cannot be empty.",
-                    RuleName = "NotEmptyLastName",
-                    Severity = RuleSeverity.Error
-                };
-            }
-            else
-            {
-                return null;
-            }
-        }
+        public bool IsLastNameValid() => !string.IsNullOrWhiteSpace(LastName);
 
-        public ValidationError IsBankAccountNumberValid()
+        public bool IsBankAccountNumberNullOrWhiteSpace() => !string.IsNullOrWhiteSpace(BankAccountNumber);
+
+        public bool IsBankAccountNumberInCorrectForm()
         {
             var pattern = @"^[A-Z0-9]{10,34}$";
-
-            if (string.IsNullOrWhiteSpace(BankAccountNumber))
-            {
-                return new ValidationError()
-                {
-                    Message = "Bank account number cannot be empty.",
-                    RuleName = "NotEmptyBankAccountNumber",
-                    Severity = RuleSeverity.Error
-                };
-            }
-
-            if (!Regex.IsMatch(BankAccountNumber, pattern))
-            {
-                return new ValidationError()
-                {
-                    Message = "Bank account number format is invalid.",
-                    RuleName = "IncorrectBankAccountNumberFormat",
-                    Severity = RuleSeverity.Error
-                };
-            }
-
-            return null;
+            return Regex.IsMatch(BankAccountNumber, pattern);
         }
     }
 }
