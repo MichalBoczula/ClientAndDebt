@@ -28,9 +28,21 @@ namespace Client.Domain.Validation.Concrete.Policies
             return validationResult;
         }
 
-        public void Describe()
+        public ValidationPolicyDescriptor Describe()
         {
-            throw new NotImplementedException("This method is not implemented yet. Please implement it if needed.");
+            var allErrors = _rules
+                .Select(rule => new ValidationRuleDescriptor ()
+                {
+                    RuleName = rule.GetType().Name,
+                    Rules = rule.Describe()
+                })
+                .ToList();
+
+            return new ValidationPolicyDescriptor()
+            {
+                PolicyName = nameof(ClientValidationPolicy),
+                Rules = allErrors
+            };
         }
     }
 }

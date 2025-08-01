@@ -1,5 +1,6 @@
 ﻿using Client.Application.Services;
 using Client.Domain.Models;
+using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.API.Endpoints
 {
@@ -16,6 +17,14 @@ namespace Client.API.Endpoints
             app.MapGet("/clients/{id:guid}", async (Guid id, ClientService service) =>
             {
                 var result = await service.GetClientByIdAsync(id);
+                return result is not null ? Results.Ok(result) : Results.NotFound();
+            });
+
+            app.MapGet("/validationRules", () =>
+            {
+                var clientValidationPolicy = new ClientValidationPolicy();
+                var result = clientValidationPolicy.Describe();
+
                 return result is not null ? Results.Ok(result) : Results.NotFound();
             });
         }
