@@ -1,6 +1,4 @@
-﻿using Client.Domain.Enums;
-using Client.Domain.Validation.Common;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.RegularExpressions;
 

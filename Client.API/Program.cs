@@ -24,7 +24,19 @@ namespace Client.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularClient", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4201")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
+
+            app.UseCors("AllowAngularClient");
 
             app.UseSwagger();
             app.UseSwaggerUI();
