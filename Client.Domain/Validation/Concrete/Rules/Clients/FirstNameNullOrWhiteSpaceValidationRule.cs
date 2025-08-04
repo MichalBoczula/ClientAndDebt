@@ -3,7 +3,7 @@ using Client.Domain.Models;
 using Client.Domain.Validation.Abstract;
 using Client.Domain.Validation.Common;
 
-namespace Client.Domain.Validation.Concrete.Rules
+namespace Client.Domain.Validation.Concrete.Rules.Clients
 {
     public class FirstNameNullOrWhiteSpaceValidationRule : IValidationRule<ClientInstance>
     {

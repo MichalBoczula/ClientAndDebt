@@ -1,9 +1,10 @@
 ﻿using Client.Domain.Models;
 using Client.Domain.Validation.Common;
 using Client.Domain.Validation.Concrete.Rules;
+using Client.Domain.Validation.Concrete.Rules.Clients;
 using Shouldly;
 
-namespace Client.Domain.Tests.Validation.Rules
+namespace Client.Domain.Tests.Validation.Rules.Clients
 {
     public class FirstNameNullOrWhiteSpaceValidationRuleTests
     {

@@ -5,7 +5,7 @@ using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.Application.Services
 {
-    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy)
+    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy)
     {
         public async Task AddClientAsync(ClientInstance client)
         {
@@ -24,6 +24,27 @@ namespace Client.Application.Services
         public async Task<ClientInstance?> GetClientByIdAsync(Guid id)
         {
             return await repository.GetByIdAsync(id);
+        }
+
+        public async Task<bool> AddDebtToClientAsync(Guid clientId, Debt debt)
+        {
+            var client = await repository.GetByIdAsync(clientId);
+
+            if (client is null)
+                return false;
+
+            var validationResult = debtValidationPolicy.Validate(debt);
+
+            if (!validationResult.IsValid)
+            {
+                throw new EntityValidationException(validationResult);
+            }
+
+            debt.Id = Guid.NewGuid(); 
+            client.Debts.Add(debt);
+
+            await repository.UpdateAsync(client);
+            return true;
         }
 
         private static void AssigneIdsToEntities(ClientInstance client)

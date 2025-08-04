@@ -23,5 +23,11 @@ namespace Client.Infrastructure.Repositories
         {
             return await _clients.Find(c => c.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task UpdateAsync(ClientInstance client)
+        {
+            var filter = Builders<ClientInstance>.Filter.Eq(c => c.Id, client.Id);
+            await _clients.ReplaceOneAsync(filter, client);
+        }
     }
 }

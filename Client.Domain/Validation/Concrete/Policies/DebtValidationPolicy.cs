@@ -1,28 +1,27 @@
 ﻿using Client.Domain.Models;
 using Client.Domain.Validation.Abstract;
 using Client.Domain.Validation.Common;
-using Client.Domain.Validation.Concrete.Rules.Clients;
+using Client.Domain.Validation.Concrete.Rules.Debts;
 
 namespace Client.Domain.Validation.Concrete.Policies
 {
-    public class ClientValidationPolicy
+    public class DebtValidationPolicy
     {
-        private readonly List<IValidationRule<ClientInstance>> _rules = new();
+        private readonly List<IValidationRule<Debt>> _rules = new();
 
-        public ClientValidationPolicy()
+        public DebtValidationPolicy()
         {
-            _rules.Add(new FirstNameNullOrWhiteSpaceValidationRule());
-            _rules.Add(new LastNameNullOrWhiteSpaceValidationRule());
-            _rules.Add(new BankAccountNumberFormatValidationRule());
+            _rules.Add(new DebtAmountValidationRule());
+            _rules.Add(new DebtDueDateValidationRule());
         }
 
-        public ValidationResult Validate(ClientInstance client)
+        public ValidationResult Validate(Debt debt)
         {
             var validationResult = new ValidationResult();
 
             foreach (var rule in _rules)
             {
-                rule.IsValid(client, validationResult);
+                rule.IsValid(debt, validationResult);
             }
 
             return validationResult;

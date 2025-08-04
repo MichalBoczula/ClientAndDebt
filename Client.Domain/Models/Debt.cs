@@ -10,5 +10,15 @@ namespace Client.Domain.Models
         public decimal Amount { get; set; }
         public DateTime DueDate { get; set; }
         public List<Payment> Payments { get; set; } = new();
+
+        public bool IsAmountInValidRange()
+        {
+            return Amount >= 500 && Amount <= 10_000;
+        }
+
+        public bool IsDueDateAtLeastOneMonthFromNow()
+        {
+            return DueDate >= DateTime.UtcNow.AddMonths(1);
+        }
     }
 }

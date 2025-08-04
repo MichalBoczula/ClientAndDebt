@@ -14,6 +14,14 @@ namespace Client.API.Endpoints
                 return Results.Created($"/clients/{client.Id}", client);
             });
 
+            app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId,
+                                                                Debt debt,
+                                                                ClientService service) =>
+            {
+                var success = await service.AddDebtToClientAsync(clientId, debt);
+                return success ? Results.Ok() : Results.NotFound();
+            });
+
             app.MapGet("/clients/{id:guid}", async (Guid id, ClientService service) =>
             {
                 var result = await service.GetClientByIdAsync(id);
@@ -23,9 +31,11 @@ namespace Client.API.Endpoints
             app.MapGet("/validationRules", () =>
             {
                 var clientValidationPolicy = new ClientValidationPolicy();
-                var result = clientValidationPolicy.Describe();
+                var debtValidationPolicy = new DebtValidationPolicy();
+                var clientResult = clientValidationPolicy.Describe();
+                var debtResult = debtValidationPolicy.Describe();
 
-                return result is not null ? Results.Ok(result) : Results.NotFound();
+                return clientResult is not null ? Results.Ok(clientResult) : Results.NotFound();
             });
         }
     }

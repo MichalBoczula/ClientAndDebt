@@ -6,5 +6,6 @@ namespace Client.Domain.Repositories
     {
         Task AddAsync(ClientInstance client);
         Task<ClientInstance?> GetByIdAsync(Guid id);
+        Task UpdateAsync(ClientInstance client);
     }
 }
