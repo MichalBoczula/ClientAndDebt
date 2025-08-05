@@ -5,7 +5,9 @@ using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.Application.Services
 {
-    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy)
+    // TODO: Global validatior policy for null objects, empty collections and empty body
+    // TODO: Dto instead of model
+    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy, PaymentValidationPolicy paymentValidationPolicy)
     {
         public async Task AddClientAsync(ClientInstance client)
         {
@@ -40,8 +42,34 @@ namespace Client.Application.Services
                 throw new EntityValidationException(validationResult);
             }
 
-            debt.Id = Guid.NewGuid(); 
+            debt.Id = Guid.NewGuid();
             client.Debts.Add(debt);
+
+            await repository.UpdateAsync(client);
+            return true;
+        }
+
+        public async Task<bool> AddPaymentToDebtAsync(Guid clientId, Guid debtId, Payment payment)
+        {
+            var client = await repository.GetByIdAsync(clientId);
+
+            if (client is null)
+                return false;
+
+            var debt = client.Debts.FirstOrDefault(d => d.Id == debtId);
+
+            if (debt is null)
+                return false;
+
+            var validationResult = paymentValidationPolicy.Validate(payment);
+
+            if (!validationResult.IsValid)
+            {
+                throw new EntityValidationException(validationResult);
+            }
+
+            payment.Id = Guid.NewGuid();
+            debt.Payments.Add(payment);
 
             await repository.UpdateAsync(client);
             return true;

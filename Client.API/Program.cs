@@ -7,6 +7,7 @@ using Client.Infrastructure.Configuration;
 
 namespace Client.API
 {
+    // TODO: Add docker compose
     public class Program
     {
         public static async Task Main(string[] args)

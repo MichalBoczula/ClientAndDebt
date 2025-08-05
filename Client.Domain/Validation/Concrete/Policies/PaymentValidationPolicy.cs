@@ -1,27 +1,27 @@
 ﻿using Client.Domain.Models;
 using Client.Domain.Validation.Abstract;
 using Client.Domain.Validation.Common;
-using Client.Domain.Validation.Concrete.Rules.Debts;
+using Client.Domain.Validation.Concrete.Rules.Payments;
 
 namespace Client.Domain.Validation.Concrete.Policies
 {
-    public class DebtValidationPolicy
+    public class PaymentValidationPolicy
     {
-        private readonly List<IValidationRule<Debt>> _rules = new();
+        private readonly List<IValidationRule<Payment>> _rules = new();
 
-        public DebtValidationPolicy()
+        public PaymentValidationPolicy()
         {
-            _rules.Add(new DebtAmountValidationRule());
-            _rules.Add(new DebtDueDateValidationRule());
+            _rules.Add(new PaymentAmountValidationRule());
+            _rules.Add(new PaymentDateValidationRule());
         }
 
-        public ValidationResult Validate(Debt debt)
+        public ValidationResult Validate(Payment payment)
         {
             var validationResult = new ValidationResult();
 
             foreach (var rule in _rules)
             {
-                rule.IsValid(debt, validationResult);
+                rule.IsValid(payment, validationResult);
             }
 
             return validationResult;
@@ -39,7 +39,7 @@ namespace Client.Domain.Validation.Concrete.Policies
 
             return new ValidationPolicyDescriptor()
             {
-                PolicyName = nameof(DebtValidationPolicy),
+                PolicyName = nameof(PaymentValidationPolicy),
                 Rules = allErrors
             };
         }

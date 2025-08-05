@@ -5,6 +5,7 @@ using MongoDB.Driver;
 
 namespace Client.Infrastructure.Context
 {
+    // TODO: Add connection to Atlas 
     public class ClientDbContext
     {
         private readonly IMongoDatabase _database;

@@ -1,9 +1,13 @@
 ﻿using Client.Application.Services;
 using Client.Domain.Models;
+using Client.Domain.Validation.Common;
 using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.API.Endpoints
 {
+    // TODO: Test containers for acceptance tests and examples
+    // TODO: refactor endpoints with validationrules
+    // TODO: endpoit should return 201 (post) or 204 (put)
     public static class ClientEndpoints
     {
         public static void MapClientEndpoints(this WebApplication app)
@@ -14,11 +18,16 @@ namespace Client.API.Endpoints
                 return Results.Created($"/clients/{client.Id}", client);
             });
 
-            app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId,
-                                                                Debt debt,
-                                                                ClientService service) =>
+            app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId, Debt debt, ClientService service) =>
             {
                 var success = await service.AddDebtToClientAsync(clientId, debt);
+                return success ? Results.Ok() : Results.NotFound();
+            });
+
+            app.MapPut("/clients/{clientId:guid}/debts/{debtId:guid}/payments", 
+                async (Guid clientId, Guid debtId, Payment payment, ClientService service) =>
+            {
+                var success = await service.AddPaymentToDebtAsync(clientId, debtId, payment);
                 return success ? Results.Ok() : Results.NotFound();
             });
 
@@ -30,12 +39,16 @@ namespace Client.API.Endpoints
 
             app.MapGet("/validationRules", () =>
             {
+                var policies = new List<ValidationPolicyDescriptor>();
                 var clientValidationPolicy = new ClientValidationPolicy();
                 var debtValidationPolicy = new DebtValidationPolicy();
-                var clientResult = clientValidationPolicy.Describe();
-                var debtResult = debtValidationPolicy.Describe();
+                var paymentValidationPolicy = new PaymentValidationPolicy();
 
-                return clientResult is not null ? Results.Ok(clientResult) : Results.NotFound();
+                policies.Add(clientValidationPolicy.Describe());
+                policies.Add(debtValidationPolicy.Describe());
+                policies.Add(paymentValidationPolicy.Describe());
+
+                return policies.Any() ? Results.Ok(policies) : Results.NotFound();
             });
         }
     }

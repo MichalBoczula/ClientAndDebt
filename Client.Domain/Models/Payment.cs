@@ -10,5 +10,9 @@ namespace Client.Domain.Models
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string? Note { get; set; }
+        
+        public bool IsAmountAboveMinimum() => Amount >= 100;
+        
+        public bool IsDateTodayOrLater() => Date.Date >= DateTime.UtcNow.Date;
     }
 }

@@ -26,7 +26,7 @@ namespace Client.API.Middlewares
 
                 var response = new
                 {
-                    Message = "Validation failed",
+                    IsValid = !ex.ValidationResult.ValidationErrors.Any(),
                     Errors = ex.ValidationResult.ValidationErrors
                 };
 

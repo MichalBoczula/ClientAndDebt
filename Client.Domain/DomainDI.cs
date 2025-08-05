@@ -9,6 +9,7 @@ namespace Client.Domain
         {
             services.AddScoped<ClientValidationPolicy>();
             services.AddScoped<DebtValidationPolicy>();
+            services.AddScoped<PaymentValidationPolicy>();
 
             return services;
         }

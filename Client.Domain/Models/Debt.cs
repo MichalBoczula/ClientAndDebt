@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Client.Domain.Models
 {
+    // TODO: Validation for Max amount of debt and max payment amount
     public class Debt
     {
         [BsonGuidRepresentation(GuidRepresentation.Standard)]

@@ -53,7 +53,7 @@ namespace Client.Domain.Tests.Validation.Policies
             // Arrange
             var debt = new Debt
             {
-                Amount = 700, // valid
+                Amount = 700,
                 DueDate = DateTime.UtcNow.AddMonths(2)
             };
             var policy = new DebtValidationPolicy();
