@@ -1,4 +1,5 @@
-﻿using Client.Domain.Exceptions;
+﻿using Client.Domain.Dto;
+using Client.Domain.Exceptions;
 using Client.Domain.Models;
 using Client.Domain.Repositories;
 using Client.Domain.Validation.Concrete.Policies;
@@ -7,7 +8,7 @@ namespace Client.Application.Services
 {
     // TODO: Global validatior policy for null objects, empty collections and empty body
     // TODO: Dto instead of model
-    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy, PaymentValidationPolicy paymentValidationPolicy)
+    public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy, PaymentValidationPolicy paymentValidationPolicy, PaymentInDebtValidationPolicy paymentInDebtValidationPolicy)
     {
         public async Task AddClientAsync(ClientInstance client)
         {
@@ -61,11 +62,24 @@ namespace Client.Application.Services
             if (debt is null)
                 return false;
 
-            var validationResult = paymentValidationPolicy.Validate(payment);
+            var paymentValidationResult = paymentValidationPolicy.Validate(payment);
 
-            if (!validationResult.IsValid)
+            if (!paymentValidationResult.IsValid)
             {
-                throw new EntityValidationException(validationResult);
+                throw new EntityValidationException(paymentValidationResult);
+            }
+
+            var paymentInDebt = new PaymentInDebt()
+            {
+                Debt = debt,
+                NewPayment = payment
+            };
+
+            var paymentInDebtResult = paymentInDebtValidationPolicy.Validate(paymentInDebt);
+
+            if (!paymentInDebtResult.IsValid)
+            {
+                throw new EntityValidationException(paymentInDebtResult);
             }
 
             payment.Id = Guid.NewGuid();

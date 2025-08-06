@@ -1,4 +1,5 @@
-﻿using Client.Domain.Validation.Concrete.Policies;
+﻿using Client.Domain.Dto;
+using Client.Domain.Validation.Concrete.Policies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Client.Domain
@@ -10,6 +11,7 @@ namespace Client.Domain
             services.AddScoped<ClientValidationPolicy>();
             services.AddScoped<DebtValidationPolicy>();
             services.AddScoped<PaymentValidationPolicy>();
+            services.AddScoped<PaymentInDebtValidationPolicy>();
 
             return services;
         }

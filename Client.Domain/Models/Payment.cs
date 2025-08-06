@@ -3,6 +3,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Client.Domain.Models
 {
+    // TODO: Change Amount 50
+    // TODO: Payment must be nutural number divaded by 50
     public class Payment
     {
         [BsonGuidRepresentation(GuidRepresentation.Standard)]

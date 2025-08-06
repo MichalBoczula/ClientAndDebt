@@ -3,7 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Client.Domain.Models
 {
-    // TODO: Validation for Max amount of debt and max payment amount
     public class Debt
     {
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
@@ -20,6 +19,20 @@ namespace Client.Domain.Models
         public bool IsDueDateAtLeastOneMonthFromNow()
         {
             return DueDate >= DateTime.UtcNow.AddMonths(1);
+        }
+
+        public (bool isValid, decimal maxAllowedInstallment) HasInstallementValidSum(Payment payment)
+        {
+            var totalPaid = Payments.Sum(p => p.Amount);
+            var maxAllowedInstallment = Amount - totalPaid;
+
+            if (payment.Amount > maxAllowedInstallment)
+            {
+                return (false, maxAllowedInstallment);
+            }
+
+            Payments.Add(payment);
+            return (true, maxAllowedInstallment);
         }
     }
 }

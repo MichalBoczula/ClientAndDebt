@@ -58,5 +58,79 @@ namespace Client.Domain.Tests.Models
             // Assert
             result.ShouldBe(expected);
         }
+
+        [Fact]
+        public void HasInstallementValidSum_Should_Return_True_And_Add_Payment_When_Valid()
+        {
+            // Arrange
+            var debt = new Debt
+            {
+                Amount = 1000,
+                Payments = new List<Payment>
+            {
+                new Payment { Amount = 200 },
+                new Payment { Amount = 300 }
+            }
+            };
+
+            var newPayment = new Payment { Amount = 400 };
+
+            // Act
+            var (isValid, maxAllowed) = debt.HasInstallementValidSum(newPayment);
+
+            // Assert
+            isValid.ShouldBeTrue();
+            maxAllowed.ShouldBe(500); 
+            debt.Payments.ShouldContain(newPayment); 
+        }
+
+        [Fact]
+        public void HasInstallementValidSum_Should_Return_False_And_Not_Add_Payment_When_Too_Much()
+        {
+            // Arrange
+            var debt = new Debt
+            {
+                Amount = 1000,
+                Payments = new List<Payment>
+            {
+                new Payment { Amount = 400 },
+                new Payment { Amount = 300 }
+            }
+            };
+
+            var newPayment = new Payment { Amount = 400 };
+
+            // Act
+            var (isValid, maxAllowed) = debt.HasInstallementValidSum(newPayment);
+
+            // Assert
+            isValid.ShouldBeFalse();
+            maxAllowed.ShouldBe(300);
+            debt.Payments.ShouldNotContain(newPayment); 
+        }
+
+        [Fact]
+        public void HasInstallementValidSum_Should_Allow_Exact_Remaining_Amount()
+        {
+            // Arrange
+            var debt = new Debt
+            {
+                Amount = 1000,
+                Payments = new List<Payment>
+            {
+                new Payment { Amount = 600 }
+            }
+            };
+
+            var newPayment = new Payment { Amount = 400 }; 
+
+            // Act
+            var (isValid, maxAllowed) = debt.HasInstallementValidSum(newPayment);
+
+            // Assert
+            isValid.ShouldBeTrue();
+            maxAllowed.ShouldBe(400);
+            debt.Payments.ShouldContain(newPayment);
+        }
     }
 }
