@@ -13,6 +13,7 @@ namespace Client.Domain.Validation.Concrete.Policies
         {
             _rules.Add(new PaymentAmountValidationRule());
             _rules.Add(new PaymentDateValidationRule());
+            _rules.Add(new PaymentDivisibleBy50Rule());
         }
 
         public ValidationResult Validate(Payment payment)

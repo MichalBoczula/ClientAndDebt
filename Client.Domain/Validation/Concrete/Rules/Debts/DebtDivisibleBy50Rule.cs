@@ -3,20 +3,20 @@ using Client.Domain.Models;
 using Client.Domain.Validation.Abstract;
 using Client.Domain.Validation.Common;
 
-namespace Client.Domain.Validation.Concrete.Rules.Payments
+namespace Client.Domain.Validation.Concrete.Rules.Debts
 {
-    public class PaymentAmountValidationRule : IValidationRule<Payment>
+    public class DebtDivisibleBy50Rule : IValidationRule<Debt>
     {
         private readonly ValidationError _error = new()
         {
-            RuleName = nameof(PaymentAmountValidationRule),
-            Message = "Payment amount must be at least 50.",
+            RuleName = nameof(DebtDivisibleBy50Rule),
+            Message = "Debt amount must be a natural number divisible by 50.",
             Severity = RuleSeverity.Error
         };
 
-        public void IsValid(Payment payment, ValidationResult result)
+        public void IsValid(Debt debt, ValidationResult result)
         {
-            if (!payment.IsAmountAboveMinimum())
+            if (!debt.IsAmountNaturalAndDivisibleBy50())
             {
                 result.ValidationErrors.Add(_error);
             }

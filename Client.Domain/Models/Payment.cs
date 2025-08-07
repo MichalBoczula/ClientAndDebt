@@ -3,8 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Client.Domain.Models
 {
-    // TODO: Change Amount 50
-    // TODO: Payment must be nutural number divaded by 50
     public class Payment
     {
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
@@ -13,8 +11,13 @@ namespace Client.Domain.Models
         public DateTime Date { get; set; }
         public string? Note { get; set; }
         
-        public bool IsAmountAboveMinimum() => Amount >= 100;
+        public bool IsAmountAboveMinimum() => Amount >= 50;
         
         public bool IsDateTodayOrLater() => Date.Date >= DateTime.UtcNow.Date;
+
+        public bool IsAmountNaturalAndDivisibleBy50()
+        {
+            return Amount > 0 && Amount % 50 == 0;
+        }
     }
 }

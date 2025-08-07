@@ -43,10 +43,12 @@ namespace Client.API.Endpoints
                 var clientValidationPolicy = new ClientValidationPolicy();
                 var debtValidationPolicy = new DebtValidationPolicy();
                 var paymentValidationPolicy = new PaymentValidationPolicy();
+                var paymentInDebtValidationPolicy = new PaymentInDebtValidationPolicy();
 
                 policies.Add(clientValidationPolicy.Describe());
                 policies.Add(debtValidationPolicy.Describe());
                 policies.Add(paymentValidationPolicy.Describe());
+                policies.Add(paymentInDebtValidationPolicy.Describe());
 
                 return policies.Any() ? Results.Ok(policies) : Results.NotFound();
             });

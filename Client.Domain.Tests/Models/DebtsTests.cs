@@ -132,5 +132,26 @@ namespace Client.Domain.Tests.Models
             maxAllowed.ShouldBe(400);
             debt.Payments.ShouldContain(newPayment);
         }
+
+        [Theory]
+        [InlineData(100, true)]
+        [InlineData(0, false)]
+        [InlineData(75, false)]
+        [InlineData(50, true)]
+        [InlineData(-100, false)]
+        public void IsValid_Should_Validate_DivisibleBy50_Rule(decimal amount, bool expectedValid)
+        {
+            // Arrange
+            var debt = new Debt
+            {
+                Amount = amount,
+            };
+
+            // Act
+            var result = debt.IsAmountNaturalAndDivisibleBy50();
+
+            // Assert
+            result.ShouldBe(expectedValid);
+        }
     }
 }

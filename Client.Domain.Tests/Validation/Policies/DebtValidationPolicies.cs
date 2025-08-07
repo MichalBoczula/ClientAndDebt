@@ -7,6 +7,28 @@ namespace Client.Domain.Tests.Validation.Policies
     public class DebtValidationPolicies
     {
         [Fact]
+        public void Validate_Should_Return_Three_Errors_When_Amount_And_DueDate_Are_Invalid()
+        {
+            // Arrange
+            var debt = new Debt
+            {
+                Amount = 125,
+                DueDate = DateTime.UtcNow.AddDays(5)
+            };
+            var policy = new DebtValidationPolicy();
+
+            // Act
+            var result = policy.Validate(debt);
+
+            // Assert
+            result.IsValid.ShouldBeFalse();
+            result.ValidationErrors.Count.ShouldBe(3);
+            result.ValidationErrors.ShouldContain(e => e.RuleName == "DebtAmountValidationRule");
+            result.ValidationErrors.ShouldContain(e => e.RuleName == "DebtDueDateValidationRule");
+            result.ValidationErrors.ShouldContain(e => e.RuleName == "DebtDivisibleBy50Rule");
+        }
+
+        [Fact]
         public void Validate_Should_Return_Two_Errors_When_Amount_And_DueDate_Are_Invalid()
         {
             // Arrange

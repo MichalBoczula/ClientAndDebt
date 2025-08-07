@@ -34,5 +34,10 @@ namespace Client.Domain.Models
             Payments.Add(payment);
             return (true, maxAllowedInstallment);
         }
+
+        public bool IsAmountNaturalAndDivisibleBy50()
+        {
+            return Amount > 0 && Amount % 50 == 0;
+        }
     }
 }

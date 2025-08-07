@@ -11,7 +11,7 @@ namespace Client.Domain.Tests.Validation.Rules.Payments
         public void IsValid_Should_Add_Error_When_Amount_Is_Less_Than_100()
         {
             // Arrange
-            var payment = new Payment { Amount = 99 };
+            var payment = new Payment { Amount = 49 };
             var result = new ValidationResult();
             var rule = new PaymentAmountValidationRule();
 

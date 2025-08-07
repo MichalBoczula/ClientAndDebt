@@ -13,6 +13,7 @@ namespace Client.Domain.Validation.Concrete.Policies
         {
             _rules.Add(new DebtAmountValidationRule());
             _rules.Add(new DebtDueDateValidationRule());
+            _rules.Add(new DebtDivisibleBy50Rule());
         }
 
         public ValidationResult Validate(Debt debt)
