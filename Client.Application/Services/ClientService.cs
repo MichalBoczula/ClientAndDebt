@@ -29,12 +29,19 @@ namespace Client.Application.Services
             return await repository.GetByIdAsync(id);
         }
 
-        public async Task<bool> AddDebtToClientAsync(Guid clientId, Debt debt)
+        public async Task<bool> AddDebtToClientAsync(Guid clientId, DebtDto debtDto)
         {
             var client = await repository.GetByIdAsync(clientId);
 
             if (client is null)
                 return false;
+
+            var debt = new Debt
+            {
+                Amount = debtDto.Amount,
+                DueDate = debtDto.DueDate,
+                Payments = new List<Payment>()
+            };
 
             var validationResult = debtValidationPolicy.Validate(debt);
 
@@ -69,7 +76,7 @@ namespace Client.Application.Services
                 throw new EntityValidationException(paymentValidationResult);
             }
 
-            var paymentInDebt = new PaymentInDebt()
+            var paymentInDebt = new PaymentInDebtDto()
             {
                 Debt = debt,
                 NewPayment = payment

@@ -5,7 +5,7 @@ using Client.Domain.Validation.Common;
 
 namespace Client.Domain.Validation.Concrete.Rules.Debts
 {
-    public class DebtPaymentInstallmentLimitRule : IValidationRule<PaymentInDebt>
+    public class DebtPaymentInstallmentLimitRule : IValidationRule<PaymentInDebtDto>
     {
         private readonly ValidationError _error = new()
         {
@@ -14,7 +14,7 @@ namespace Client.Domain.Validation.Concrete.Rules.Debts
             Severity = RuleSeverity.Error
         };
 
-        public void IsValid(PaymentInDebt paymentInDebt, ValidationResult validationResults)
+        public void IsValid(PaymentInDebtDto paymentInDebt, ValidationResult validationResults)
         {
             var result = paymentInDebt.Debt.HasInstallementValidSum(paymentInDebt.NewPayment);
             if (!result.isValid)

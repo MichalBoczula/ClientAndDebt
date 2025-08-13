@@ -7,14 +7,14 @@ namespace Client.Domain.Validation.Concrete.Policies
 {
     public class PaymentInDebtValidationPolicy
     {
-        private readonly List<IValidationRule<PaymentInDebt>> _rules = new();
+        private readonly List<IValidationRule<PaymentInDebtDto>> _rules = new();
 
         public PaymentInDebtValidationPolicy()
         {
             _rules.Add(new DebtPaymentInstallmentLimitRule());
         }
 
-        public ValidationResult Validate(PaymentInDebt paymentInDebt)
+        public ValidationResult Validate(PaymentInDebtDto paymentInDebt)
         {
             var validationResult = new ValidationResult();
 

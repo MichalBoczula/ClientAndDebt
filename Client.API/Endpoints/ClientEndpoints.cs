@@ -1,4 +1,5 @@
 ﻿using Client.Application.Services;
+using Client.Domain.Dto;
 using Client.Domain.Models;
 using Client.Domain.Validation.Common;
 using Client.Domain.Validation.Concrete.Policies;
@@ -18,7 +19,7 @@ namespace Client.API.Endpoints
                 return Results.Created($"/clients/{client.Id}", client);
             });
 
-            app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId, Debt debt, ClientService service) =>
+            app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId, DebtDto debt, ClientService service) =>
             {
                 var success = await service.AddDebtToClientAsync(clientId, debt);
                 return success ? Results.Ok() : Results.NotFound();

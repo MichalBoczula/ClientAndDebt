@@ -22,7 +22,7 @@ namespace Client.Domain.Tests.Validation.Policies
 
             var payment = new Payment { Amount = 300 };
 
-            var paymentInDebt = new PaymentInDebt
+            var paymentInDebt = new PaymentInDebtDto
             {
                 Debt = debt,
                 NewPayment = payment
@@ -55,7 +55,7 @@ namespace Client.Domain.Tests.Validation.Policies
 
             var payment = new Payment { Amount = 400 };
 
-            var paymentInDebt = new PaymentInDebt
+            var paymentInDebt = new PaymentInDebtDto
             {
                 Debt = debt,
                 NewPayment = payment
