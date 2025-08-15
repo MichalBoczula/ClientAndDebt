@@ -7,7 +7,6 @@ using Client.Domain.Validation.Concrete.Policies;
 namespace Client.Application.Services
 {
     // TODO: Global validatior policy for null objects, empty collections and empty body
-    // TODO: Dto instead of model
     public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy, PaymentValidationPolicy paymentValidationPolicy, PaymentInDebtValidationPolicy paymentInDebtValidationPolicy)
     {
         public async Task AddClientAsync(ClientInstance client)
@@ -96,7 +95,7 @@ namespace Client.Application.Services
             return true;
         }
 
-        private static void AssigneIdsToEntities(ClientInstance client)
+        private void AssigneIdsToEntities(ClientInstance client)
         {
             client.Id = Guid.NewGuid();
 
@@ -109,6 +108,27 @@ namespace Client.Application.Services
                     payment.Id = Guid.NewGuid();
                 }
             }
+        }
+
+        public async Task<bool> UpdateClientData(Guid clientId, UpdateClientInstanceDto updateClientDto)
+        {
+            var client = await repository.GetByIdAsync(clientId);
+
+            if (client is null)
+                return false;
+
+            client.FirstName = updateClientDto.FirstName;
+            client.LastName = updateClientDto.LastName;
+            client.BankAccountNumber = updateClientDto.BankAccountNumber;
+
+            var validationResult = clientValidationPolicy.Validate(client);
+            if (!validationResult.IsValid)
+            {
+                throw new EntityValidationException(validationResult);
+            }
+
+            await repository.UpdateAsync(client);
+            return true;
         }
     }
 }

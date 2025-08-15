@@ -19,6 +19,12 @@ namespace Client.API.Endpoints
                 return Results.Created($"/clients/{client.Id}", client);
             });
 
+            app.MapPut("/clients/{clientId:guid}", async (Guid clientId, UpdateClientInstanceDto updateClientDto, ClientService service) =>
+            {
+                var success = await service.UpdateClientData(clientId, updateClientDto);
+                return success ? Results.Ok() : Results.NotFound();
+            });
+
             app.MapPut("/clients/{clientId:guid}/debts", async (Guid clientId, DebtDto debt, ClientService service) =>
             {
                 var success = await service.AddDebtToClientAsync(clientId, debt);
