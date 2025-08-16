@@ -81,7 +81,6 @@ namespace Client.Domain.Tests.Models
             // Assert
             isValid.ShouldBeTrue();
             maxAllowed.ShouldBe(500); 
-            debt.Payments.ShouldContain(newPayment); 
         }
 
         [Fact]
@@ -130,7 +129,6 @@ namespace Client.Domain.Tests.Models
             // Assert
             isValid.ShouldBeTrue();
             maxAllowed.ShouldBe(400);
-            debt.Payments.ShouldContain(newPayment);
         }
 
         [Theory]

@@ -31,7 +31,6 @@ namespace Client.Domain.Models
                 return (false, maxAllowedInstallment);
             }
 
-            Payments.Add(payment);
             return (true, maxAllowedInstallment);
         }
 
