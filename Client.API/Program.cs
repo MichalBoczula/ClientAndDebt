@@ -8,7 +8,7 @@ using Client.Infrastructure.Configuration;
 namespace Client.API
 {
     // TODO: Add docker compose
-    public class Program
+    public partial class Program
     {
         public static async Task Main(string[] args)
         {
@@ -48,8 +48,9 @@ namespace Client.API
 
             app.UseAuthorization();
 
-            using (var scope = app.Services.CreateScope())
+            if (!app.Environment.IsEnvironment("Testing"))
             {
+                using var scope = app.Services.CreateScope();
                 var initializer = scope.ServiceProvider.GetRequiredService<MongoInitializer>();
                 await initializer.EnsureIndexesCreatedAsync();
             }

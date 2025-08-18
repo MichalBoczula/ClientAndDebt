@@ -6,7 +6,6 @@ using Client.Domain.Validation.Concrete.Policies;
 
 namespace Client.API.Endpoints
 {
-    // TODO: Test containers for acceptance tests and examples
     // TODO: refactor endpoints with validationrules
     // TODO: endpoit should return 201 (post) or 204 (put)
     public static class ClientEndpoints
