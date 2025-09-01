@@ -4,5 +4,6 @@
     {
         public decimal Amount { get; set; }
         public DateTime DueDate { get; set; }
+        public List<PaymentDto>? Payments { get; set; }
     }
 }

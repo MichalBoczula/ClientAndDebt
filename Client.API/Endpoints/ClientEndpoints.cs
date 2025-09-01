@@ -12,10 +12,10 @@ namespace Client.API.Endpoints
     {
         public static void MapClientEndpoints(this WebApplication app)
         {
-            app.MapPost("/clients", async (ClientInstance client, ClientService service) =>
+            app.MapPost("/clients", async (CreateClientDto client, ClientService service) =>
             {
-                await service.AddClientAsync(client);
-                return Results.Created($"/clients/{client.Id}", client);
+                var result = await service.AddClientAsync(client);
+                return Results.Created($"/clients/{result.Id}", result);
             });
 
             app.MapPut("/clients/{clientId:guid}", async (Guid clientId, UpdateClientInstanceDto updateClientDto, ClientService service) =>
@@ -31,7 +31,7 @@ namespace Client.API.Endpoints
             });
 
             app.MapPut("/clients/{clientId:guid}/debts/{debtId:guid}/payments", 
-                async (Guid clientId, Guid debtId, Payment payment, ClientService service) =>
+                async (Guid clientId, Guid debtId, PaymentDto payment, ClientService service) =>
             {
                 var success = await service.AddPaymentToDebtAsync(clientId, debtId, payment);
                 return success ? Results.Ok() : Results.NotFound();

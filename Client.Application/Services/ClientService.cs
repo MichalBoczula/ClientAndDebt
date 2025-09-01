@@ -1,4 +1,5 @@
-﻿using Client.Domain.Dto;
+﻿using Client.Application.Helpers;
+using Client.Domain.Dto;
 using Client.Domain.Exceptions;
 using Client.Domain.Models;
 using Client.Domain.Repositories;
@@ -9,8 +10,10 @@ namespace Client.Application.Services
     // TODO: Global validatior policy for null objects, empty collections and empty body
     public class ClientService(IClientRepository repository, ClientValidationPolicy clientValidationPolicy, DebtValidationPolicy debtValidationPolicy, PaymentValidationPolicy paymentValidationPolicy, PaymentInDebtValidationPolicy paymentInDebtValidationPolicy)
     {
-        public async Task AddClientAsync(ClientInstance client)
+        public async Task<ClientInstance> AddClientAsync(CreateClientDto clientDto)
         {
+            ClientInstance client = ModelFactory.CreateClient(clientDto);
+
             var validationResult = clientValidationPolicy.Validate(client);
 
             if (!validationResult.IsValid)
@@ -18,9 +21,9 @@ namespace Client.Application.Services
                 throw new EntityValidationException(validationResult);
             }
 
-            AssigneIdsToEntities(client);
-
             await repository.AddAsync(client);
+
+            return client;
         }
 
         public async Task<ClientInstance?> GetClientByIdAsync(Guid id)
@@ -34,13 +37,7 @@ namespace Client.Application.Services
 
             if (client is null)
                 return false;
-
-            var debt = new Debt
-            {
-                Amount = debtDto.Amount,
-                DueDate = debtDto.DueDate,
-                Payments = new List<Payment>()
-            };
+            Debt debt = ModelFactory.CreateDebt(debtDto);
 
             var validationResult = debtValidationPolicy.Validate(debt);
 
@@ -49,14 +46,13 @@ namespace Client.Application.Services
                 throw new EntityValidationException(validationResult);
             }
 
-            debt.Id = Guid.NewGuid();
             client.Debts.Add(debt);
 
             await repository.UpdateAsync(client);
             return true;
         }
 
-        public async Task<bool> AddPaymentToDebtAsync(Guid clientId, Guid debtId, Payment payment)
+        public async Task<bool> AddPaymentToDebtAsync(Guid clientId, Guid debtId, PaymentDto paymentDto)
         {
             var client = await repository.GetByIdAsync(clientId);
 
@@ -67,6 +63,8 @@ namespace Client.Application.Services
 
             if (debt is null)
                 return false;
+
+            Payment payment = ModelFactory.CreatePayment(paymentDto);
 
             var paymentValidationResult = paymentValidationPolicy.Validate(payment);
 
@@ -88,26 +86,10 @@ namespace Client.Application.Services
                 throw new EntityValidationException(paymentInDebtResult);
             }
 
-            payment.Id = Guid.NewGuid();
             debt.Payments.Add(payment);
 
             await repository.UpdateAsync(client);
             return true;
-        }
-
-        private void AssigneIdsToEntities(ClientInstance client)
-        {
-            client.Id = Guid.NewGuid();
-
-            foreach (var debt in client.Debts)
-            {
-                debt.Id = Guid.NewGuid();
-
-                foreach (var payment in debt.Payments)
-                {
-                    payment.Id = Guid.NewGuid();
-                }
-            }
         }
 
         public async Task<bool> UpdateClientData(Guid clientId, UpdateClientInstanceDto updateClientDto)
